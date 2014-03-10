@@ -1,0 +1,83 @@
+BCM96358 ADSL Router
+Login: twsz
+Password:
+> sh
+
+
+BusyBox v1.00 (2010.08.05-09:24+0000) Built-in shell (msh)
+Enter 'help' for a list of built-in commands.
+
+# ps
+  PID  Uid     VmSize Stat Command
+    1             340 S   init
+    2                 SWN [ksoftirqd/0]
+    3                 SW< [events/0]
+    4                 SW< [khelper]
+    5                 SW< [kblockd/0]
+    6                 SW  [khubd]
+   20                 SW  [pdflush]
+   21                 SW  [pdflush]
+   22                 SW  [kswapd0]
+   23                 SW< [aio/0]
+   28                 SW  [mtdblockd]
+   44             372 S   -sh
+   83            2072 S   cfm
+  599             184 S   wps_btn
+  754             364 S   dhcpd
+  942             820 S   wsccmd
+  943             820 S   wsccmd
+  944             820 S   wsccmd
+  945             820 S   wsccmd
+  946             820 S   wsccmd
+  947             820 S   wsccmd
+  948             820 S   wsccmd
+  949             820 S   wsccmd
+  950             820 S   wsccmd
+  956             564 S   nas -P /var/wl0nas.lan0.pid -H 34954 -l br0 -i wl0 -A
+  968             288 S   sntp -s clock.fmt.he.net -t Beijing, Chongqing, Hong
+ 1088             308 S   bftpd -d -c /var/bftpd.conf
+ 1091             820 S   wsccmd
+ 1130                 SWN [jffs2_gcd_mtd1]
+ 1131            2352 S   httpd
+ 1153             496 S   pppd -c 3 -i eth0 -u 18930460056 -p ******** -f 0 -m
+ 1420             424 S   upnp -L br0 -W ppp3 -D
+ 1471             308 S   dhcpc -i eth0.46
+ 1477             312 S   /bin/igmp ppp3
+ 1626            2760 S   tr69c
+ 1760            3092 S < vodsl sipstart
+ 1761            3092 S   vodsl sipstart
+ 1762            3092 S   vodsl sipstart
+ 1764             272 S   /bin/dnsprobe
+ 1791            3092 S   vodsl sipstart
+ 1792            3092 S   vodsl sipstart
+ 1793            3092 S   vodsl sipstart
+ 1797            3092 S   vodsl sipstart
+ 1798            3092 S   vodsl sipstart
+ 1799                 SW  [aoRT]
+ 1800                 SW  [aoAP]
+ 1804                 SW  [CMT_EXCEPTION_I]
+ 1805                 SW  [HTSK]
+ 1814            2760 S   tr69c
+ 1815            2760 S   tr69c
+ 1816                 SW  [HRTBEAT]
+ 1817                 SW  [VRGEVPR]
+ 1818                 SW  [HCAS]
+ 1819            3092 S   vodsl sipstart
+ 1820            3092 S   vodsl sipstart
+ 1821            3092 S   vodsl sipstart
+ 1822            3092 S   vodsl sipstart
+ 1823            3092 S   vodsl sipstart
+ 1824            3092 S   vodsl sipstart
+ 1825            3092 S   vodsl sipstart
+ 1826            3092 S   vodsl sipstart
+ 1827            3092 S   vodsl sipstart
+ 1828            3092 S   vodsl sipstart
+ 1829            3092 S   vodsl sipstart
+ 1830            3092 S   vodsl sipstart
+ 1831            3092 S   vodsl sipstart
+ 1832            3092 S   vodsl sipstart
+ 2277            2092 S   telnetd
+ 2278            2112 S   telnetd
+ 2279             320 S   sh -c sh
+ 2280             376 S   sh
+ 2281             344 R   ps
