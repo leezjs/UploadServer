@@ -10,11 +10,11 @@ import (
 	"os"
 )
 
-func postFile(filename string, targetUrl string) error {
+func postFile(filename string, targetUrl string, params map[string]string) error {
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
 	//关键的一步操作
-	fileWriter, err := bodyWriter.CreateFormFile("the_file", filename)
+	fileWriter, err := bodyWriter.CreateFormFile("musicfile", filename)
 	if err != nil {
 		fmt.Println("error writing to buffer")
 		return err
@@ -31,6 +31,12 @@ func postFile(filename string, targetUrl string) error {
 	if err != nil {
 		return err
 	}
+
+	// 传入额外参数
+	for key, val := range params {
+		_ = bodyWriter.WriteField(key, val)
+	}
+
 	contentType := bodyWriter.FormDataContentType()
 	bodyWriter.Close()
 	resp, err := http.Post(targetUrl, contentType, bodyBuf)
@@ -50,7 +56,10 @@ func postFile(filename string, targetUrl string) error {
 
 // sample usage
 func main() {
-	target_url := "http://localhost:8080/upload"
-	filename := "./test.txt"
-	postFile(filename, target_url)
+	target_url := "http://localhost:8080/uploadmusic"
+	filename := "./JasonDeruloWhatchaSay.mp3"
+	extraParams := map[string]string{
+		"uid": "45256235",
+	}
+	postFile(filename, target_url, extraParams)
 }
