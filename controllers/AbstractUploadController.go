@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"UploadServer/models"
+	//"fmt"
 	"github.com/astaxie/beego"
 	"os"
+	"strconv"
 )
 
 type UploadResut struct {
@@ -13,6 +16,34 @@ type UploadResut struct {
 type AbstractUploadController struct {
 	beego.Controller
 	RootFolder string
+}
+
+// 验证访问是否合法
+// 1. 检查sig签名是否正确
+func (this *AbstractUploadController) CheckSig() bool {
+	return true
+}
+
+// 2. 检查token是否存在且未过期
+func (this *AbstractUploadController) CheckToken() bool {
+	strUserId := this.GetString("uid")
+	userId, _ := strconv.Atoi(strUserId)
+	strToken := this.GetString("token")
+
+	// check sig
+
+	// check token
+	usertoken := models.GetValidUserTokenById(userId)
+	// 未获取用户token信息
+	if usertoken.UserId == 0 {
+		return false
+	} else {
+		if usertoken.Token == strToken {
+			return true
+		} else {
+			return false
+		}
+	}
 }
 
 // output json

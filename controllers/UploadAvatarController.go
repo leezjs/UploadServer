@@ -27,7 +27,7 @@ func (this *UploadAvatarController) Post() {
 	// create folder 按尾数最后三位取模
 	strSuffix := strconv.Itoa(userId % 1000)
 
-	rootPath := beego.AppConfig.String("rootfolder")
+	rootPath := beego.AppConfig.String("ROOT_FOLDER")
 	savePath := rootPath + "/" + strSuffix
 	// 如果文件夹不存在，创建文件夹
 	if isFolderExist, _ := this.exists(savePath); isFolderExist == false {
