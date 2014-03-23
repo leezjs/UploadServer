@@ -17,6 +17,7 @@ func (this *UploadAvatarController) Prepare() {
 
 func (this *UploadAvatarController) Get() {
 	fmt.Println("In Get")
+	this.output(-1, "this action does not support get method")
 }
 
 func (this *UploadAvatarController) Post() {

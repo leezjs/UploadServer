@@ -21,3 +21,5 @@ INDEX (  `iUserId` ,  `iFileType` ,  `iStatus` )
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci
 /*!PARTITION BY HASH (iUserId)
 PARTITIONS 100 */;
+ALTER TABLE  `tbuseruploadfile_template` ADD  `sFileSavePath` VARCHAR( 512 ) NOT NULL AFTER  `sFileDesc` ;
+

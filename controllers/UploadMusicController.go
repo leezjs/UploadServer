@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"os"
+	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type UploadMusicController struct {
@@ -18,6 +20,7 @@ func (this *UploadMusicController) Prepare() {
 
 func (this *UploadMusicController) Get() {
 	fmt.Println("In Get")
+	this.output(-1, "this action does not support get method")
 }
 
 func (this *UploadMusicController) Post() {
@@ -51,18 +54,25 @@ func (this *UploadMusicController) Post() {
 
 	_, h, _ := this.GetFile("musicfile")
 	// 无需关心文件后缀
-	//var extension = filepath.Ext(filename)
-	err := this.SaveToFile("musicfile", savePath+"/"+h.Filename)
+	var extension = filepath.Ext(h.Filename)
+	if extension != ".mp3" {
+		this.output(6, "文件格式错误")
+		return
+	}
+
+	saveFileName := strconv.Itoa(int(time.Now().Unix())) + ".mp3"
+	err := this.SaveToFile("musicfile", savePath+"/"+saveFileName)
 	if err != nil {
 		this.output(4, "文件存储失败:"+err.Error())
 		return
 	} else {
 		// 存入DB
 		fileInfo := models.UserUploadFile{
-			UserId:   userId,
-			FileType: 0,
-			FileName: this.GetString("filename"),
-			FileDesc: this.GetString("filedesc"),
+			UserId:       userId,
+			FileType:     0,
+			FileName:     this.GetString("filename"),
+			FileDesc:     this.GetString("filedesc"),
+			FileSavePath: savePath + "/" + saveFileName,
 		}
 		if models.AddNewFile(fileInfo) {
 			this.output(0, "OK")

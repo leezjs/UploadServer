@@ -17,13 +17,14 @@ type UserToken struct {
 }
 
 type UserUploadFile struct {
-	Id         int       `json:"id"`
-	UserId     int       `json:"iUserId"`
-	FileType   int       `json:"iFileType"`
-	FileName   string    `json:"sFileName"`
-	FileDesc   string    `json:"sFileDesc"`
-	UploadTime time.Time `json:"dtUploadTime"`
-	Status     int       `json:"iStatus"`
+	Id           int       `json:"id"`
+	UserId       int       `json:"iUserId"`
+	FileType     int       `json:"iFileType"`
+	FileName     string    `json:"sFileName"`
+	FileDesc     string    `json:"sFileDesc"`
+	FileSavePath string    `json:"sFileSavePath"`
+	UploadTime   time.Time `json:"dtUploadTime"`
+	Status       int       `json:"iStatus"`
 }
 
 var db *sql.DB = nil
@@ -42,6 +43,7 @@ func OpenDB() *sql.DB {
 		if err != nil {
 			panic(err)
 		}
+
 		// set connection pool size
 		maxConn, _ := strconv.Atoi(beego.AppConfig.String("CONN_POOL_SIZE"))
 		db.SetMaxIdleConns(maxConn)
@@ -62,10 +64,36 @@ func GetValidUserTokenById(userid int) *UserToken {
 // 插入一条文件记录
 func AddNewFile(file UserUploadFile) bool {
 	db := OpenDB()
-	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iFileType, sFileName, sFileDesc, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, NOW(), 0 )",
-		file.UserId, file.FileType, file.FileName, file.FileDesc)
+	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iFileType, sFileName, sFileDesc, sFileSavePath, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, ?, NOW(), 0 )",
+		file.UserId, file.FileType, file.FileName, file.FileDesc, file.FileSavePath)
 
 	if err != nil {
+		fmt.Println("exec " + err.Error())
+		return false
+	} else {
+		return true
+	}
+}
+
+// 获取DB文件详细信息
+func GetFileInfo(fileId int) *UserUploadFile {
+	db := OpenDB()
+	row := db.QueryRow("SELECT * FROM `tbuseruploadfile` WHERE id=?", fileId)
+	fileInfo := new(UserUploadFile)
+	row.Scan(&fileInfo.Id, &fileInfo.UserId, &fileInfo.FileType, &fileInfo.FileName,
+		&fileInfo.FileDesc, &fileInfo.FileSavePath, &fileInfo.UploadTime, &fileInfo.Status)
+	return fileInfo
+}
+
+// 删除一条记录
+func DeleteFile(fileId int) bool {
+	db := OpenDB()
+	res, err := db.Exec("DELETE FROM `tbuseruploadfile` WHERE id=?", fileId)
+
+	rows, _ := res.RowsAffected()
+	if rows == 0 {
+		return false
+	} else if err != nil {
 		fmt.Println("exec " + err.Error())
 		return false
 	} else {

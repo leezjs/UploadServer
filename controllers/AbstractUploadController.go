@@ -4,9 +4,12 @@ import (
 	"UploadServer/models"
 	//"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"os"
 	"strconv"
 )
+
+var Log *logs.BeeLogger
 
 type UploadResut struct {
 	Ret int
@@ -14,13 +17,15 @@ type UploadResut struct {
 }
 
 type AbstractUploadController struct {
-	beego.Controller
 	RootFolder string
+	beego.Controller
 }
 
 // 验证访问是否合法
 // 1. 检查sig签名是否正确
 func (this *AbstractUploadController) CheckSig() bool {
+	// check sig
+
 	return true
 }
 
@@ -29,8 +34,6 @@ func (this *AbstractUploadController) CheckToken() bool {
 	strUserId := this.GetString("uid")
 	userId, _ := strconv.Atoi(strUserId)
 	strToken := this.GetString("token")
-
-	// check sig
 
 	// check token
 	usertoken := models.GetValidUserTokenById(userId)
