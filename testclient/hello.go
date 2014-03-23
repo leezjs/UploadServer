@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 )
 
-func postFile(filename string, targetUrl string, params map[string]string) error {
+func postFile(filename string, targetUrl string, params map[string]string, c chan int) error {
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
 	//关键的一步操作
@@ -51,6 +54,7 @@ func postFile(filename string, targetUrl string, params map[string]string) error
 	fmt.Println(resp.Status)
 	fmt.Println(string(resp_body))
 
+	c <- 1
 	return nil
 }
 
@@ -58,8 +62,32 @@ func postFile(filename string, targetUrl string, params map[string]string) error
 func main() {
 	target_url := "http://localhost:8080/uploadmusic"
 	filename := "./JasonDeruloWhatchaSay.mp3"
-	extraParams := map[string]string{
-		"uid": "45256235",
+	usertoken := "222"
+
+	threadCount := 1
+	c := make(chan int, threadCount)
+	t0 := time.Now()
+	for x := 0; x < threadCount; x++ {
+		userId := rand.Intn(1000000)
+		userId = 123
+		extraParams := map[string]string{
+			"uid":      strconv.Itoa(userId),
+			"filename": filename,
+			"filedesc": "test desc",
+			"token":    usertoken,
+			"sig":      "123",
+		}
+		postFile(filename, target_url, extraParams, c)
 	}
-	postFile(filename, target_url, extraParams)
+
+	count := 1
+	for count <= threadCount {
+		select {
+		case <-c:
+			count++
+		}
+	}
+	t1 := time.Now()
+	fmt.Printf("The call took %v to run.\n", t1.Sub(t0))
+
 }
