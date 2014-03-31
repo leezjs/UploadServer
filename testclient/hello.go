@@ -61,7 +61,9 @@ func postFile(filename string, targetUrl string, params map[string]string, c cha
 // sample usage
 func main() {
 	target_url := "http://localhost:8080/uploadmusic"
+	//target_url := "http://localhost:8080/uploadavatar"
 	filename := "./JasonDeruloWhatchaSay.mp3"
+	//filename := "./IMG_7176.JPG"
 	usertoken := "222"
 
 	threadCount := 1

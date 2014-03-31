@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -31,9 +32,11 @@ func (this *UploadMusicController) Post() {
 	// check valid access
 	if this.CheckSig() == false {
 		this.output(1, "用户签名不合法")
+		Log.Error("用户 " + strUserId + " 用户签名不合法")
 	}
 	if this.CheckToken() == false {
 		this.output(2, "用户token不合法")
+		Log.Error("用户 " + strUserId + " 用户Token不合法")
 		return
 	}
 
@@ -47,6 +50,7 @@ func (this *UploadMusicController) Post() {
 		err := os.MkdirAll(savePath, 0777)
 		if err != nil {
 			this.output(3, "文件夹创建失败:"+err.Error())
+			Log.Error("用户 " + strUserId + " 文件夹创建失败:" + err.Error())
 			return
 		}
 
@@ -54,9 +58,10 @@ func (this *UploadMusicController) Post() {
 
 	_, h, _ := this.GetFile("musicfile")
 	// 无需关心文件后缀
-	var extension = filepath.Ext(h.Filename)
+	var extension = strings.ToLower(filepath.Ext(h.Filename))
 	if extension != ".mp3" {
-		this.output(6, "文件格式错误")
+		this.output(6, "文件格式错误, 仅支持MP3格式")
+		Log.Error("用户 " + strUserId + " 文件格式错误, 仅支持MP3格式")
 		return
 	}
 
@@ -64,20 +69,24 @@ func (this *UploadMusicController) Post() {
 	err := this.SaveToFile("musicfile", savePath+"/"+saveFileName)
 	if err != nil {
 		this.output(4, "文件存储失败:"+err.Error())
+		Log.Error("用户 " + strUserId + " 文件存储失败:" + err.Error())
 		return
 	} else {
 		// 存入DB
 		fileInfo := models.UserUploadFile{
-			UserId:       userId,
-			FileType:     0,
-			FileName:     this.GetString("filename"),
-			FileDesc:     this.GetString("filedesc"),
-			FileSavePath: savePath + "/" + saveFileName,
+			UserId:         userId,
+			FileType:       0,
+			FileName:       this.GetString("filename"),
+			FileRemoteName: saveFileName,
+			FileDesc:       this.GetString("filedesc"),
+			FileSavePath:   savePath + "/" + saveFileName,
 		}
 		if models.AddNewFile(fileInfo) {
 			this.output(0, "OK")
+			Log.Info("用户 " + strUserId + " 上传歌曲成功")
 		} else {
 			this.output(5, "文件信息存入DB失败")
+			Log.Error("用户 " + strUserId + " 文件信息存入DB失败")
 		}
 		return
 	}

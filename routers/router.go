@@ -8,7 +8,7 @@ import (
 
 func init() {
 	controllers.Log = logs.NewLogger(10000)
-	controllers.Log.SetLogger("file", `{"filename":"test.log"}`)
+	controllers.Log.SetLogger("file", `{"filename":"log/trace.log"}`)
 
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/uploadmusic", &controllers.UploadMusicController{})

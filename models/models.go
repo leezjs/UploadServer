@@ -17,14 +17,15 @@ type UserToken struct {
 }
 
 type UserUploadFile struct {
-	Id           int       `json:"id"`
-	UserId       int       `json:"iUserId"`
-	FileType     int       `json:"iFileType"`
-	FileName     string    `json:"sFileName"`
-	FileDesc     string    `json:"sFileDesc"`
-	FileSavePath string    `json:"sFileSavePath"`
-	UploadTime   time.Time `json:"dtUploadTime"`
-	Status       int       `json:"iStatus"`
+	Id             int       `json:"id"`
+	UserId         int       `json:"iUserId"`
+	FileType       int       `json:"iFileType"`
+	FileName       string    `json:"sFileName"`
+	FileRemoteName string    `json:"sFileRemoteName"`
+	FileDesc       string    `json:"sFileDesc"`
+	FileSavePath   string    `json:"sFileSavePath"`
+	UploadTime     time.Time `json:"dtUploadTime"`
+	Status         int       `json:"iStatus"`
 }
 
 var db *sql.DB = nil
@@ -64,8 +65,8 @@ func GetValidUserTokenById(userid int) *UserToken {
 // 插入一条文件记录
 func AddNewFile(file UserUploadFile) bool {
 	db := OpenDB()
-	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iFileType, sFileName, sFileDesc, sFileSavePath, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, ?, NOW(), 0 )",
-		file.UserId, file.FileType, file.FileName, file.FileDesc, file.FileSavePath)
+	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iFileType, sFileName, sFileRemoteName, sFileDesc, sFileSavePath, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, ?, ?, NOW(), 0 )",
+		file.UserId, file.FileType, file.FileName, file.FileRemoteName, file.FileDesc, file.FileSavePath)
 
 	if err != nil {
 		fmt.Println("exec " + err.Error())
@@ -80,15 +81,19 @@ func GetFileInfo(fileId int) *UserUploadFile {
 	db := OpenDB()
 	row := db.QueryRow("SELECT * FROM `tbuseruploadfile` WHERE id=?", fileId)
 	fileInfo := new(UserUploadFile)
-	row.Scan(&fileInfo.Id, &fileInfo.UserId, &fileInfo.FileType, &fileInfo.FileName,
+	row.Scan(&fileInfo.Id, &fileInfo.UserId, &fileInfo.FileType, &fileInfo.FileName, &fileInfo.FileRemoteName,
 		&fileInfo.FileDesc, &fileInfo.FileSavePath, &fileInfo.UploadTime, &fileInfo.Status)
 	return fileInfo
 }
 
 // 删除一条记录
+// 数据库里标记
+// -1 代表临时删除状态
+// -2 代表已经真正删除
 func DeleteFile(fileId int) bool {
 	db := OpenDB()
-	res, err := db.Exec("DELETE FROM `tbuseruploadfile` WHERE id=?", fileId)
+	// res, err := db.Exec("DELETE FROM `tbuseruploadfile` WHERE id=?", fileId)
+	res, err := db.Exec("UPDATE `tbuseruploadfile` SET iStatus=-1 WHERE id=?", fileId)
 
 	rows, _ := res.RowsAffected()
 	if rows == 0 {
