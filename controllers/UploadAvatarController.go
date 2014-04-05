@@ -56,7 +56,7 @@ func (this *UploadAvatarController) Post() {
 
 	}
 
-	_, h, _ := this.GetFile("musicfile")
+	_, h, _ := this.GetFile("avatarfile")
 	// 无需关心文件后缀
 	var extension = strings.ToLower(filepath.Ext(h.Filename))
 	if extension != ".jpg" && extension != ".jpeg" && extension != ".png" && extension != ".gif" {
