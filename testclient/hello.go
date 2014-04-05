@@ -77,7 +77,7 @@ func main() {
 			"filename": filename,
 			"filedesc": "test desc",
 			"token":    usertoken,
-			"sig":      "123",
+			"sig":      "ddffe17871bd096ee619a41fbf4b38d5",
 		}
 		postFile(filename, target_url, extraParams, c)
 	}
