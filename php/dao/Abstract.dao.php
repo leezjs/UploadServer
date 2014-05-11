@@ -42,7 +42,7 @@ class AbstractDAO {
         $params = $this->filterParameters($params);
         
         $strval = $this->getStrKeyVal($params);
-        $sql = "UPDATE {$this->tablename} SET " . $strval . " where {$primarykey}={$id}";
+        $sql = "UPDATE {$this->tablename} SET " . $strval . " where {$primarykey}='{$id}'";
         $res = $this->db->Update($sql);
         if ($res > 0) {
             return true;

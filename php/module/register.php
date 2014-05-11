@@ -7,8 +7,6 @@
 class register extends AbstractAction {
 
     public function run() {
-        $dao = $this->getDao("AccountDAO");
-        
         $email = cleanInput($this->params['email']);
         $password = cleanInput($this->params['password']);
         $deviceid = cleanInput($this->params['deviceid']);
@@ -29,6 +27,7 @@ class register extends AbstractAction {
             return;
         }
         
+        $dao = $this->getDao("AccountDAO");
         // check email exist
         if($dao->IsUserExist($email)){
             $this->output(1, "用户{$email}已存在");
