@@ -6,9 +6,9 @@
  * @author Jensen Zhang
  * 2014-03-22 Create
  */
-require_once 'aliyun/sdk.class.php';
-require_once 'DB.class.php';
-require_once 'common.php';
+require_once 'lib/aliyun/sdk.class.php';
+require_once 'lib/DB.class.php';
+require_once 'lib/common.php';
 
 $oss_sdk_service = new ALIOSS();
 

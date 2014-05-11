@@ -1,21 +1,21 @@
 <?php
 
 /**
- * º¯Êı¶¨Òå
+ * å‡½æ•°å®šä¹‰
  */
 /*%**************************************************************************************************************%*/
-// Service Ïà¹Ø
+// Service ç›¸å…³
 
-//»ñÈ¡bucketÁĞ±í
+//è·å–bucketåˆ—è¡¨
 function get_service($obj){
 	$response = $obj->list_bucket();
 	_format($response);
 }
 
 /*%**************************************************************************************************************%*/
-// Bucket Ïà¹Ø
+// Bucket ç›¸å…³
 
-//´´½¨bucket
+//åˆ›å»ºbucket
 function create_bucket($obj){
 	$bucket = 'uploadserver';
 	//$acl = ALIOSS::OSS_ACL_TYPE_PRIVATE;
@@ -26,7 +26,7 @@ function create_bucket($obj){
 	_format($response);
 }
 
-//É¾³ıbucket
+//åˆ é™¤bucket
 function delete_bucket($obj){
 	$bucket = 'uploadserver';
 	
@@ -35,9 +35,9 @@ function delete_bucket($obj){
 }
 
 /*%**************************************************************************************************************%*/
-// Object Ïà¹Ø
+// Object ç›¸å…³
 
-//»ñÈ¡objectÁĞ±í
+//è·å–objectåˆ—è¡¨
 function list_object($obj){
 	$options = array(
 		'delimiter' => '',
@@ -50,7 +50,7 @@ function list_object($obj){
 	//_format($response);
 }
 
-//Í¨¹ıÂ·¾¶ÉÏ´«ÎÄ¼ş
+//é€šè¿‡è·¯å¾„ä¸Šä¼ æ–‡ä»¶
 function upload_by_file($obj, $remotefilepath, $localfilepath){
 	$object = $remotefilepath;	
 	$file_path = $localfilepath;
@@ -59,7 +59,7 @@ function upload_by_file($obj, $remotefilepath, $localfilepath){
 	//_format($response);
 }
 
-//É¾³ıobject
+//åˆ é™¤object
 function delete_object($obj, $filepath){
 	$object = $filepath;
 	$response = $obj->delete_object(UPLOAD_SERVER_BUCKET,$object);
@@ -67,13 +67,13 @@ function delete_object($obj, $filepath){
 }
 
 /*%**************************************************************************************************************%*/
-// ½á¹û Ïà¹Ø
+// ç»“æœ ç›¸å…³
 
 function simplelog($msg){
 	echo "[".date("Y-m-d H:i:s")."] ".$msg."\n";
 }
 
-//¸ñÊ½»¯·µ»Ø½á¹û
+//æ ¼å¼åŒ–è¿”å›ç»“æœ
 function _format($response) {
 	echo '|-----------------------Start---------------------------------------------------------------------------------------------------'."\n";
 	echo '|-Status:' . $response->status . "\n";
@@ -82,4 +82,102 @@ function _format($response) {
 	echo "|-Header:\n";
 	print_r ( $response->header );
 	echo '-----------------------End-----------------------------------------------------------------------------------------------------'."\n\n";
+}
+
+
+/**
+ * Clean user input
+ * @param type $param
+ * @return type 
+ */
+function cleanInput( $param ){
+    if (is_array($param)){
+        foreach ($param as $k => $v){
+            $param[$k] = cleanInput($v); //recursive
+        }
+    }
+    elseif (is_string($param)){
+        $param = trim($param);
+        
+        // filter XSS
+        $param = htmlspecialchars( $param );
+        // filter SQL injection
+        $trans = array(
+            '"' => '&quot;',
+            '\'' => ''
+        );
+        $param = strtr($param,$trans);
+    }
+    return $param;
+}
+
+/**
+ * output json result
+ * 
+ * @param type $iRetcode
+ * @param type $sErrorMsg
+ * @param type $vmResult 
+ */
+function jsonp_output($funcName, $iRetcode, $sErrorMsg, $vmResult = array()) {
+    $res = array(
+        'retCode' => $iRetcode,
+        'retInfo' => $sErrorMsg,
+        'list' => $vmResult
+    );
+
+    echo ";".$funcName."(".json_encode($res).")";
+}
+
+/**
+ * GBKè½¬UTF8ï¼Œä¼ å…¥çš„æ•°æ®å¯ä¸ºæ•°ç»„æˆ–å­—ç¬¦ä¸²
+ * æ•°ç»„åˆ™ç»§ç»­è§£æåˆ°å­—ç¬¦ä¸²
+ * @param $str
+ * @return unknown_type
+ */
+function GBKtoUTF8($str)
+{
+    if(is_array($str))
+    {
+        foreach ($str as &$value) 
+        {
+            $value = GBKtoUTF8($value);
+        }
+        return $str;
+    }
+    elseif (is_string($str))
+    {   
+        $str = iconv("GBK", "UTF-8//IGNORE", $str);
+        return $str;
+    }
+    else
+    {
+        return $str;
+    }
+}
+
+/**
+ * UTF8è½¬GBKï¼Œä¼ å…¥çš„æ•°æ®å¯ä¸ºæ•°ç»„æˆ–å­—ç¬¦ä¸²
+ * æ•°ç»„åˆ™ç»§ç»­è§£æåˆ°å­—ç¬¦ä¸²
+ * @param $str
+ * @return unknown_type
+ */
+function UTF8toGBK(&$str)
+{
+    if(is_array($str))
+    {
+        foreach ($str as &$value) 
+        {
+            $value = UTF8toGBK($value);
+        }
+        return $str;			
+    }
+    elseif (is_string($str))
+    {   
+        $str = iconv("UTF-8", "GBK//IGNORE", $str);
+        return $str;
+    }
+    else
+    {
+        return $str;
+    }
 }
