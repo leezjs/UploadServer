@@ -1,18 +1,19 @@
 <?php
 /**
- * 忘记密码
+ * 用户验证
  *
  * @author Jensen
  */
-class forgot_password extends AbstractAction {
+class user_auth extends AbstractAction {
 
     public function run() {
-        global $MAIL_SUBJECT;
         $email = cleanInput($this->params['email']);
+        $password = cleanInput($this->params['password']);
         $sig = cleanInput($this->params['sig']);
         
         // parameter check
         $data = array();
+        $data['password'] = $password;
         $data['email'] = $email;
         if( $this->validateParameter($data) ==  -1 ){
             return;
@@ -25,30 +26,35 @@ class forgot_password extends AbstractAction {
 //        }
         
         $dao = $this->getDao("AccountDAO");
+        $accountId = $dao->DoUserAuth($email, $password);
         // check email exist
-        if($dao->IsUserExist($email)){
-            $newpassword = $this->randomString(6);
-            // send email
-            $message = "您刚申请了《天天爱唱歌》的密码找回，新的密码为：$newpassword, 登陆后请尽快修改密码";
-
-            // Send
-            mail($email, $MAIL_SUBJECT, $message);
-
-            // reset password
-            $params['password'] = $newpassword;
-            $ret = $dao->Update( $email, $params, 'email' );
-            if( $ret !== false ){
-                $this->output(0, "OK, password reseted");
-            }
-            else{
-                $this->output(-1, "DB 操作失败");
+        if( $accountId !== false )
+        {
+            // generate random token
+            $token = $this->randomToken(32);
+            $detail = array( 
+                "account_id" => $accountId,
+                "token" => $token, 
+            );
+            
+            // put into redis
+            try{
+                $redis = new Redis();
+                $redis->connect('127.0.0.1', 6379);
+                $redis->hMSet("account:".$email, $detail);
+                $redis->close();
+                
+                $this->output(0, "OK", $detail);
+            } catch (Exception $ex) {
+                $this->output(2, "user auth failed, failed to store to cache");
             }
         }
         else{
-            $this->output(1, "用户{$email}不存在");
+            $this->output(1, "User Not valid");
         }
+        
     }
-    
+
     /**
      * param validation
      * 
@@ -63,7 +69,13 @@ class forgot_password extends AbstractAction {
                 'required' => true,
                 'datatype' => VALIDATE_DATATYPE_EMAIL,
                 'minlen' => 6
-            )
+            ),
+            array(
+                'field' => 'password',
+                'name' => 'password',
+                'required' => true,
+                'datatype' => VALIDATE_DATATYPE_STRING
+            ),
         );
 
         $validator = new Validator($validate_config);
@@ -75,15 +87,14 @@ class forgot_password extends AbstractAction {
             return -1;
         }
     }
-
-    private function randomString( $len )
+    
+    private function randomToken( $len )
     {
-        $characters = "0123456789abcdefghijklmnopqrstuvwxyz";
+        $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ";
         $randstring = '';
         for ($i = 0; $i < $len; $i++) {
             $randstring .= $characters[rand(0, strlen($characters))];
         }
         return $randstring;
     }
-
 }

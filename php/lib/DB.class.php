@@ -65,6 +65,8 @@ class DB {
     private $connection = null;
     private $schema = null;
     
+    private $assoc = true;
+    
     public static function GetInstance( $dbType = 0 ){
         if( $dbType == 0 ){
             static $instance = null;
@@ -131,12 +133,13 @@ class DB {
      * @return string when query succeed, false when query failed
      */
     function GetValue($sql, $nameSpace = NULL, $key = NULL) {
-
+        $this->assoc = false;
         $result = $this->Query($sql, $nameSpace, $key);
 
         if (count($result) == 0)
             return false;
 
+        $this->assoc = true;
         return $result[0][0];
     }
 
@@ -256,7 +259,7 @@ class DB {
     }
 
     function fa($rs) {
-        if (!isset($this->assoc)) {
+        if ($this->assoc==false) {
             return @mysql_fetch_array($rs);
         } else {
             return @mysql_fetch_assoc($rs);
@@ -334,5 +337,3 @@ class DB {
     }
 
 }
-
-?>

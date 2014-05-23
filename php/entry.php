@@ -43,4 +43,5 @@ function JS_autoload($class_name) {
 }
 
 require_once('config/config.inc.php');
+require_once('config/constant.inc.php');
 require_once 'lib/common.php';
