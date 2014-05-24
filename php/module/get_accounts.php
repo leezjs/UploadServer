@@ -23,7 +23,7 @@ class get_accounts extends AbstractAction {
 //            return;
 //        }
         
-        $dao = $this->getDao("AccountDAO");
+        $dao = $this->getDao("AccountDeviceDAO");
         // check email exist
         $userList = $dao->GetUserListByDeviceId($deviceid);
         $this->output(0, "OK", $userList);

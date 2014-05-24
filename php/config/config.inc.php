@@ -16,6 +16,9 @@ if (debug) {
     define('DB_USERNAME', 'root');
     define('DB_PASSWORD', 'root');
     define('DB_SCHEMA', 'gameserver');
+    
+    define('REDIS_SERVER', '127.0.0.1');
+    define('REDIS_PORT', 6379);
 } else {
     define('HOST', 'http://线上域名/');
     
@@ -25,6 +28,9 @@ if (debug) {
     define('DB_USERNAME', 'root');
     define('DB_PASSWORD', 'root');
     define('DB_SCHEMA', 'gameserver');
+    
+    define('REDIS_SERVER', '127.0.0.1');
+    define('REDIS_PORT', 6379);
 }
 
 define("PRIVATE_KEY", "JUST_SING_KEY");

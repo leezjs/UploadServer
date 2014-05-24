@@ -22,10 +22,10 @@ class register extends AbstractAction {
         }
         
         // check sig
-        if($sig != $this->assembleSig($data) ){
-            $this->output(1, "请求签名不合法");
-            return;
-        }
+//        if($sig != $this->assembleSig($data) ){
+//            $this->output(1, "请求签名不合法");
+//            return;
+//        }
         
         $dao = $this->getDao("AccountDAO");
         // check email exist
@@ -33,9 +33,9 @@ class register extends AbstractAction {
             $this->output(1, "用户{$email}已存在");
         }
         else{
-            // add to db
             $data['account'] = $email;
-            $accountId = $dao->Add( $data );
+            // add to db, 同时插入三张表中
+            $accountId = $dao->DoRegister( $data );
             if( $accountId !== false ){
                 $this->output(0, "OK, accont id is {$accountId}");
             }

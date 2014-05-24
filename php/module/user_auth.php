@@ -25,7 +25,7 @@ class user_auth extends AbstractAction {
 //            return;
 //        }
         
-        $dao = $this->getDao("AccountDAO");
+        $dao = $this->getDao("AccountEmailDAO");
         $accountId = $dao->DoUserAuth($email, $password);
         // check email exist
         if( $accountId !== false )
@@ -40,7 +40,7 @@ class user_auth extends AbstractAction {
             // put into redis
             try{
                 $redis = new Redis();
-                $redis->connect('127.0.0.1', 6379);
+                $redis->connect(REDIS_SERVER, REDIS_PORT);
                 $redis->hMSet("account:".$email, $detail);
                 $redis->close();
                 

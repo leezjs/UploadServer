@@ -24,9 +24,10 @@ class forgot_password extends AbstractAction {
 //            return;
 //        }
         
-        $dao = $this->getDao("AccountDAO");
+        $dao = $this->getDao("AccountEmailDAO");
+        $userInfo = $dao->GetUserInfo($email);
         // check email exist
-        if($dao->IsUserExist($email)){
+        if( $userInfo !== false ){
             $newpassword = $this->randomString(6);
             // send email
             $message = "您刚申请了《天天爱唱歌》的密码找回，新的密码为：$newpassword, 登陆后请尽快修改密码";
@@ -36,7 +37,8 @@ class forgot_password extends AbstractAction {
 
             // reset password
             $params['password'] = $newpassword;
-            $ret = $dao->Update( $email, $params, 'email' );
+            $accountDao = $this->getDao("AccountDAO");
+            $ret = $accountDao->UpdatePassword( $userInfo['email'], $userInfo['device_id'], $params );
             if( $ret !== false ){
                 $this->output(0, "OK, password reseted");
             }

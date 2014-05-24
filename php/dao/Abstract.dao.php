@@ -18,6 +18,11 @@ class AbstractDAO {
         $this->db->Disconnect();
     }
     
+    public function GetSuffix( $value, $tableNum = 100 ){
+        // using the first charactor to do table sharding
+        return ord($value)%$tableNum;
+    }
+    
     /**
      * if succeed, return last insert id
      * 
@@ -59,6 +64,25 @@ class AbstractDAO {
         if ($res > 0) {
             return true;
         } else {
+            return false;
+        }
+    }
+    
+    /**
+     * 执行事务
+     * 
+     * @param type $sqls
+     */
+    public function ExecTrans( $sqls ){
+        try{
+            $this->db->BeginTransaction();
+            foreach( $sqls as $sql ){
+                $this->db->Update($sql);
+            }
+            $this->db->Commit();
+            return true;
+        } catch (Exception $ex) {
+            $this->db->Rollback();
             return false;
         }
     }
