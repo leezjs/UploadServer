@@ -34,6 +34,8 @@ class AccountDAO extends AbstractDAO {
      */
     public function CreateTable( $prefix, $num=100){
         for($i=0;$i<$num;$i++){
+            $sql = "DROP TABLE {$prefix}_{$i}";
+            $this->db->Update($sql);
             $sql = "CREATE TABLE IF NOT EXISTS {$prefix}_{$i} LIKE accounts_template";
             $this->db->Update($sql);
         }
