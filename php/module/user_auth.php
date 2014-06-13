@@ -41,7 +41,9 @@ class user_auth extends AbstractAction {
             try{
                 $redis = new Redis();
                 $redis->connect(REDIS_SERVER, REDIS_PORT);
+                // duplicate user info saved in redis
                 $redis->hMSet("account:".$email, $detail);
+                $redis->hMSet("account_id:".$accountId, $detail);
                 $redis->close();
                 
                 $this->output(0, "OK", $detail);
