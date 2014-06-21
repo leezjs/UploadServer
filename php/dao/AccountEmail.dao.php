@@ -31,14 +31,9 @@ class AccountEmailDAO extends AbstractDAO {
      */
     public function DoUserAuth($email, $password){
         $suffix = $this->GetSuffix($email);
-        $sql = "select account_id from {$this->tablename}_{$suffix} where email='$email' and password='$password'";
-        $aid = $this->db->GetValue($sql);
-        if( !empty($aid) ){
-            return $aid;
-        }
-        else{
-            return false;
-        }
+        $sql = "select * from {$this->tablename}_{$suffix} where email='$email' and password='$password'";
+        $userInfo = $this->db->GetRow($sql);
+        return $userInfo;
     }
 }
 

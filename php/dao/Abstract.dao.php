@@ -20,6 +20,9 @@ class AbstractDAO {
     
     public function GetSuffix( $value, $tableNum = 100 ){
         // using the first charactor to do table sharding
+//        $lastChar = substr($value, -1);
+//        $secondChar = substr($value, -2);
+//        return ord($secondChar)*($tableNum)%26 + ord($lastChar)*($tableNum/10)%26;
         return ord($value)%$tableNum;
     }
     

@@ -9,12 +9,17 @@ class user_auth extends AbstractAction {
     public function run() {
         $email = cleanInput($this->params['email']);
         $password = cleanInput($this->params['password']);
+        $deviceId = cleanInput($this->params['deviceid']);
         $sig = cleanInput($this->params['sig']);
         
+        // test code
+//        echo ord($email)."<br />";
+//        echo ord($deviceId)."<br />";
         // parameter check
         $data = array();
         $data['password'] = $password;
         $data['email'] = $email;
+        $data['deviceid'] = $deviceId;
         if( $this->validateParameter($data) ==  -1 ){
             return;
         }
@@ -26,10 +31,11 @@ class user_auth extends AbstractAction {
 //        }
         
         $dao = $this->getDao("AccountEmailDAO");
-        $accountId = $dao->DoUserAuth($email, $password);
+        $userInfo = $dao->DoUserAuth($email, $password);
         // check email exist
-        if( $accountId !== false )
+        if( $userInfo !== false )
         {
+            $accountId = $userInfo['account_id'];
             // generate random token
             $token = $this->randomToken(32);
             $detail = array( 
@@ -45,6 +51,15 @@ class user_auth extends AbstractAction {
                 $redis->hMSet("account:".$email, $detail);
                 $redis->hMSet("account_id:".$accountId, $detail);
                 $redis->close();
+                
+                // check if device id has been changed
+                if( $deviceId != $userInfo['device_id']){
+                    $accountDao = $this->getDao("AccountDAO");
+                    $data = $userInfo;
+                    $data['device_id'] = $deviceId;
+                    unset($userInfo['account_id']);
+                    $accountDao->UpdateDeviceId( $email, $userInfo['device_id'], $data);
+                }
                 
                 $this->output(0, "OK", $detail);
             } catch (Exception $ex) {
@@ -75,6 +90,12 @@ class user_auth extends AbstractAction {
             array(
                 'field' => 'password',
                 'name' => 'password',
+                'required' => true,
+                'datatype' => VALIDATE_DATATYPE_STRING
+            ),
+            array(
+                'field' => 'deviceid',
+                'name' => 'deviceid',
                 'required' => true,
                 'datatype' => VALIDATE_DATATYPE_STRING
             ),
