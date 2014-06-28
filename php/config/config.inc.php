@@ -5,6 +5,8 @@ define('debug', true);
 
 define('ROOT_DIR', dirname(dirname(__FILE__)) . '/');
 define('LIB_DIR', ROOT_DIR . 'lib/');
+define('SMARTY_DIR', ROOT_DIR . 'smarty/');
+define('TMP_DIR', ROOT_DIR . 'tmp/');
 
 //static content
 if (debug) {
@@ -31,6 +33,24 @@ if (debug) {
     
     define('REDIS_SERVER', '127.0.0.1');
     define('REDIS_PORT', 6379);
+}
+
+define("STATIC_DOMAIN", HOST."static/");
+define("JS_DIR", STATIC_DOMAIN."js/");
+define("CSS_DIR", STATIC_DOMAIN."css/");
+define("IMG_DIR", STATIC_DOMAIN."images/");
+
+// initialize Smarty variable
+if (!isset($__noSmarty) && !isset($TPL)) {
+    require_once( SMARTY_DIR . 'Smarty.class.php' );
+    $TPL = & new Smarty;
+
+    $TPL->template_dir = ROOT_DIR . '/tpl';
+    $TPL->compile_dir = TMP_DIR . '/tpl_c';
+    $TPL->cache_dir = TMP_DIR . '/cache';
+
+    //assign constant to all page
+    $TPL->assign('constant', get_defined_constants());
 }
 
 define("PRIVATE_KEY", "JUST_SING_KEY");

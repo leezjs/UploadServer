@@ -1,7 +1,7 @@
 <?php
 
-ini_set( 'display_errors','on' );
-error_reporting( E_ERROR );
+ini_set('display_errors', 'on');
+error_reporting(E_ERROR);
 //error_reporting( E_ALL );
 
 spl_autoload_register("JS_autoload");
@@ -18,7 +18,7 @@ function JS_autoload($class_name) {
         'module/',
         'module/'
     );
-        
+
     //for each directory
     foreach ($directorys as $directory) {
         //see if the file exsists
@@ -30,7 +30,7 @@ function JS_autoload($class_name) {
             require_once($directory . $class_name . '.class.php');
             return true;
         }
-        if( strpos($class_name, "DAO") !== false ){
+        if (strpos($class_name, "DAO") !== false) {
             $dao_class_name = str_replace("DAO", "", $class_name);
         }
         if (file_exists($directory . $dao_class_name . '.dao.php')) {
@@ -38,7 +38,7 @@ function JS_autoload($class_name) {
             return true;
         }
     }
-    
+
     return false;
 }
 
