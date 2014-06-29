@@ -28,22 +28,30 @@ class forgot_password extends AbstractAction {
         $userInfo = $dao->GetUserInfo($email);
         // check email exist
         if( $userInfo !== false ){
-            $newpassword = $this->randomString(6);
+            $requestTime = time();
+            $data = array();
+            $data['time'] = $requestTime;
+            $data['email'] = $email;
+            $sig = $this->assembleSig($data);
+//            $url = HOST."index.php?action=reset_password&email={$email}&time={$requestTime}&sig={$sig}";
+            
+            // for test
+//            echo $url;
+            // generate check some
+//            $newpassword = $this->randomString(6);
             // send email
-            $message = "您刚申请了《天天爱唱歌》的密码找回，新的密码为：$newpassword, 登陆后请尽快修改密码";
-
+//            $message = "您刚申请了《天天爱唱歌》的密码重置，点击<a href=\"{$url}\">这里</a>进行密码重置<br />";
+//            $message .= "<a href=\"{$url}\">密码重置</a>";
+            $message = "您刚申请了《天天爱唱歌》的密码重置，点击进行密码重置";
+            
             // Send
-            mail($email, $MAIL_SUBJECT, $message);
-
-            // reset password
-            $params['password'] = $newpassword;
-            $accountDao = $this->getDao("AccountDAO");
-            $ret = $accountDao->UpdatePassword( $userInfo['email'], $userInfo['device_id'], $params );
-            if( $ret !== false ){
-                $this->output(0, "OK, password reseted");
+            $ret = mail($email, $MAIL_SUBJECT, $message);
+            
+            if($ret){
+                $this->output(0, "OK, mail sent");
             }
             else{
-                $this->output(-1, "DB 操作失败");
+                $this->output(1, "mail send failed");
             }
         }
         else{
