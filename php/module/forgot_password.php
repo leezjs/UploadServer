@@ -33,16 +33,15 @@ class forgot_password extends AbstractAction {
             $data['time'] = $requestTime;
             $data['email'] = $email;
             $sig = $this->assembleSig($data);
-//            $url = HOST."index.php?action=reset_password&email={$email}&time={$requestTime}&sig={$sig}";
+            $url = HOST."index.php?action=reset_password&email={$email}&time={$requestTime}&sig={$sig}";
             
             // for test
 //            echo $url;
             // generate check some
 //            $newpassword = $this->randomString(6);
             // send email
-//            $message = "您刚申请了《天天爱唱歌》的密码重置，点击<a href=\"{$url}\">这里</a>进行密码重置<br />";
-//            $message .= "<a href=\"{$url}\">密码重置</a>";
-            $message = "您刚申请了《天天爱唱歌》的密码重置，点击进行密码重置";
+            $message = "您刚申请了《天天爱唱歌》的密码重置，点击<a href=\"{$url}\">这里</a>进行密码重置<br />";
+            $message .= "<a href=\"{$url}\">密码重置</a>";
             
             // Send
             $ret = mail($email, $MAIL_SUBJECT, $message);
