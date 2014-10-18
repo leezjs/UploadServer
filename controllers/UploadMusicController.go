@@ -28,6 +28,11 @@ func (this *UploadMusicController) Post() {
 	// get user id first
 	strUserId := this.GetString("uid")
 	userId, _ := strconv.Atoi(strUserId)
+	// 大区ID
+	strZoneId := this.GetString("zoneid")
+	zoneId, _ := strconv.Atoi(strZoneId)
+	// 唯一id
+	strUniqId := this.GetString("unique_id")
 
 	// check valid access
 	if this.CheckSig() == false {
@@ -75,6 +80,7 @@ func (this *UploadMusicController) Post() {
 		// 存入DB
 		fileInfo := models.UserUploadFile{
 			UserId:         userId,
+			ZoneId:         zoneId,
 			FileType:       0,
 			FileName:       this.GetString("filename"),
 			FileRemoteName: saveFileName,
@@ -88,6 +94,8 @@ func (this *UploadMusicController) Post() {
 			this.output(5, "文件信息存入DB失败")
 			Log.Error("用户 " + strUserId + " 文件信息存入DB失败")
 		}
+
+		// 调用服务器端http接口
 		return
 	}
 

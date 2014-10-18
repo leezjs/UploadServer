@@ -28,6 +28,11 @@ func (this *UploadAvatarController) Post() {
 	// get user id first
 	strUserId := this.GetString("uid")
 	userId, _ := strconv.Atoi(strUserId)
+	// 大区ID
+	strZoneId := this.GetString("zoneid")
+	zoneId, _ := strconv.Atoi(strZoneId)
+	// 唯一id
+	strUniqId := this.GetString("unique_id")
 
 	// check valid access
 	if this.CheckSig() == false {
@@ -75,6 +80,7 @@ func (this *UploadAvatarController) Post() {
 		// 存入DB
 		fileInfo := models.UserUploadFile{
 			UserId:         userId,
+			ZoneId:         zoneId,
 			FileType:       1,
 			FileName:       this.GetString("filename"),
 			FileRemoteName: saveFileName,

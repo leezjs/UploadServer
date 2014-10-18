@@ -19,6 +19,7 @@ type UserToken struct {
 type UserUploadFile struct {
 	Id             int       `json:"id"`
 	UserId         int       `json:"iUserId"`
+	ZoneId         int       `json:"iZoneId"`
 	FileType       int       `json:"iFileType"`
 	FileName       string    `json:"sFileName"`
 	FileRemoteName string    `json:"sFileRemoteName"`
@@ -65,8 +66,8 @@ func GetValidUserTokenById(userid int) *UserToken {
 // 插入一条文件记录
 func AddNewFile(file UserUploadFile) bool {
 	db := OpenDB()
-	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iFileType, sFileName, sFileRemoteName, sFileDesc, sFileSavePath, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, ?, ?, NOW(), 0 )",
-		file.UserId, file.FileType, file.FileName, file.FileRemoteName, file.FileDesc, file.FileSavePath)
+	_, err := db.Exec("INSERT INTO `tbuseruploadfile` (iUserId, iZoneId, iFileType, sFileName, sFileRemoteName, sFileDesc, sFileSavePath, dtUploadTime, iStatus) VALUES ( ?, ?, ?, ?, ?, ?, ?, NOW(), 0 )",
+		file.UserId, file.ZoneId, file.FileType, file.FileName, file.FileRemoteName, file.FileDesc, file.FileSavePath)
 
 	if err != nil {
 		fmt.Println("exec " + err.Error())
@@ -81,7 +82,7 @@ func GetFileInfo(fileId int) *UserUploadFile {
 	db := OpenDB()
 	row := db.QueryRow("SELECT * FROM `tbuseruploadfile` WHERE id=?", fileId)
 	fileInfo := new(UserUploadFile)
-	row.Scan(&fileInfo.Id, &fileInfo.UserId, &fileInfo.FileType, &fileInfo.FileName, &fileInfo.FileRemoteName,
+	row.Scan(&fileInfo.Id, &fileInfo.UserId, &fileInfo.ZoneId, &fileInfo.FileType, &fileInfo.FileName, &fileInfo.FileRemoteName,
 		&fileInfo.FileDesc, &fileInfo.FileSavePath, &fileInfo.UploadTime, &fileInfo.Status)
 	return fileInfo
 }

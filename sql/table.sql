@@ -73,3 +73,4 @@ CREATE TABLE `tbuseruploadfile` (
   KEY `iUserId` (`iUserId`,`iFileType`,`iStatus`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
+ALTER TABLE  `tbuseruploadfile` ADD  `iZone` INT NOT NULL COMMENT  '大区信息' AFTER  `iUserId` ;
