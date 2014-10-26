@@ -62,9 +62,10 @@ func postFile(filename string, targetUrl string, params map[string]string, c cha
 func main() {
 	target_url := "http://localhost:8080/uploadmusic"
 	//target_url := "http://localhost:8080/uploadavatar"
-	filename := "./JasonDeruloWhatchaSay.mp3"
+	filename := "./jenny.mp3"
 	//filename := "./IMG_7176.JPG"
 	usertoken := "222"
+	zone := 1
 
 	threadCount := 1
 	c := make(chan int, threadCount)
@@ -73,11 +74,13 @@ func main() {
 		userId := rand.Intn(1000000)
 		userId = 123
 		extraParams := map[string]string{
-			"uid":      strconv.Itoa(userId),
-			"filename": filename,
-			"filedesc": "test desc",
-			"token":    usertoken,
-			"sig":      "ddffe17871bd096ee619a41fbf4b38d5",
+			"uid":       strconv.Itoa(userId),
+			"zoneid":    strconv.Itoa(zone),
+			"filename":  filename,
+			"filedesc":  "test desc",
+			"token":     usertoken,
+			"sig":       "ddffe17871bd096ee619a41fbf4b38d5",
+			"unique_id": "aaaa",
 		}
 		postFile(filename, target_url, extraParams, c)
 	}

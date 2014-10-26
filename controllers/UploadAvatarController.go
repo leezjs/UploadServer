@@ -35,15 +35,15 @@ func (this *UploadAvatarController) Post() {
 	strUniqId := this.GetString("unique_id")
 
 	// check valid access
-	if this.CheckSig() == false {
-		this.output(1, "用户签名不合法")
-		Log.Error("用户 " + strUserId + " 用户签名不合法")
-	}
-	if this.CheckToken() == false {
-		this.output(2, "用户token不合法")
-		Log.Error("用户 " + strUserId + " 用户Token不合法")
-		return
-	}
+	//if this.CheckSig() == false {
+	//	this.output(1, "用户签名不合法")
+	//	Log.Error("用户 " + strUserId + " 用户签名不合法")
+	//}
+	//if this.CheckToken() == false {
+	//	this.output(2, "用户token不合法")
+	//	Log.Error("用户 " + strUserId + " 用户Token不合法")
+	//	return
+	//}
 
 	// create folder 按尾数最后三位取模
 	strSuffix := strconv.Itoa(userId % 1000)
@@ -86,6 +86,7 @@ func (this *UploadAvatarController) Post() {
 			FileRemoteName: saveFileName,
 			FileDesc:       this.GetString("filedesc"),
 			FileSavePath:   savePath + "/" + saveFileName,
+			UniqueId:       strUniqId,
 		}
 		if models.AddNewFile(fileInfo) {
 			this.output(0, "OK")

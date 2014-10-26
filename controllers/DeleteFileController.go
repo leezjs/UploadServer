@@ -16,15 +16,15 @@ func (this *DeleteFileController) Get() {
 	strUserId := this.GetString("uid")
 
 	// check valid access
-	if this.CheckSig() == false {
-		this.output(1, "用户签名不合法")
-		Log.Error("用户 " + strUserId + " 用户签名不合法")
-	}
-	if this.CheckToken() == false {
-		this.output(2, "用户token不合法")
-		Log.Error("用户 " + strUserId + " 用户Token不合法")
-		return
-	}
+	//if this.CheckSig() == false {
+	//	this.output(1, "用户签名不合法")
+	//	Log.Error("用户 " + strUserId + " 用户签名不合法")
+	//}
+	//if this.CheckToken() == false {
+	//	this.output(2, "用户token不合法")
+	//	Log.Error("用户 " + strUserId + " 用户Token不合法")
+	//	return
+	//}
 
 	userId, _ := strconv.Atoi(strUserId)
 	strFileId := this.GetString("fileid")
