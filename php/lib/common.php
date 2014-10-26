@@ -38,7 +38,7 @@ function delete_bucket($obj){
 // Object 相关
 
 //获取object列表
-function list_object($obj){
+function list_object($obj, $bucket = UPLOAD_SERVER_BUCKET){
 	$options = array(
 		'delimiter' => '',
 		'prefix' => '',

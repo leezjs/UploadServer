@@ -1,5 +1,6 @@
 <?php
 
+//ini_set('display_errors', 'on');
 //error_reporting(E_ALL);
 define('debug', true);
 
@@ -21,6 +22,8 @@ if (debug) {
     
     define('REDIS_SERVER', '127.0.0.1');
     define('REDIS_PORT', 6379);
+    
+    define("UPLOAD_NOTIFY_SERVER", "http://localhost/github/UploadServer/php/index.php?action=notify_test");
 } else {
     define('HOST', 'http://线上域名/');
     
@@ -33,6 +36,8 @@ if (debug) {
     
     define('REDIS_SERVER', '127.0.0.1');
     define('REDIS_PORT', 6379);
+    
+    define("UPLOAD_NOTIFY_SERVER", "正式通知Server");
 }
 
 define("STATIC_DOMAIN", HOST."static/");
